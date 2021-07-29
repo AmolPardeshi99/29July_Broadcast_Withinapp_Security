@@ -1,0 +1,2 @@
+rootProject.name = "29July_Broadcast_Withinapp_Security"
+include ':app'

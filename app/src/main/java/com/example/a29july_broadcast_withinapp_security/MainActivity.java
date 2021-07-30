@@ -3,6 +3,7 @@ package com.example.a29july_broadcast_withinapp_security;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -17,44 +18,45 @@ import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
-
     private Button mBtnSend;
-    public LocalBroadcastManager broadcastManager;
     private LocalReceiver localReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        broadcastManager = LocalBroadcastManager.getInstance(this);
         mBtnSend = findViewById(R.id.btnSend);
-        registerlocal();
         mBtnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent("com.amol");
-                intent.putExtra("message","This is message from activity1");
-                broadcastManager.sendBroadcast(intent);
+                intent.putExtra("data", "This is message from activity1");
+                sendBroadcast(intent);
+                registerlocal();
             }
         });
 
     }
 
-    private void registerlocal() {
-        IntentFilter intentFilter = new IntentFilter("com.amol");
-       localReceiver = new LocalReceiver();
-        broadcastManager.registerReceiver(localReceiver,intentFilter);
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Intent intent = new Intent("com.amol");
+        intent.putExtra("data","This is message from activity1");
+        sendBroadcast(intent,Manifest.permission.CAMERA);
+       }
 
+    private void registerlocal() {
+        localReceiver = new LocalReceiver();
+        IntentFilter intentFilter = new IntentFilter("com.amol");
+        registerReceiver(localReceiver, intentFilter);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        broadcastManager.unregisterReceiver(localReceiver);
-    }
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        unregisterReceiver(localReceiver);
+//    }
 
 }
